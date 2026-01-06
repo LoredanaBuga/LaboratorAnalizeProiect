@@ -1,48 +1,67 @@
-﻿@page
+﻿@page "{id:int?}"
 @model LaboratorAnalize.Pages.TipuriAnalize.IndexModel
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Tipuri Analize";
 }
 
-<h1>Index</h1>
+<h1>Tipuri Analize</h1>
 
 <p>
     <a asp-page="Create">Create New</a>
 </p>
+
 <table class="table">
     <thead>
         <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.TipAnaliza[0].Denumire)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.TipAnaliza[0].TipProba)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.TipAnaliza[0].NecesitaNemancat)
-            </th>
+            <th>Denumire</th>
+            <th>Tip proba</th>
+            <th>Necesita nemancat</th>
             <th></th>
         </tr>
     </thead>
+
     <tbody>
-@foreach (var item in Model.TipAnaliza) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Denumire)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.TipProba)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.NecesitaNemancat)
-            </td>
-            <td>
-                <a asp-page="./Edit" asp-route-id="@item.ID">Edit</a> |
-                <a asp-page="./Details" asp-route-id="@item.ID">Details</a> |
-                <a asp-page="./Delete" asp-route-id="@item.ID">Delete</a>
-            </td>
-        </tr>
-}
+        @foreach (var item in Model.TipAnalizaData.TipuriAnalize)
+        {
+            var selectedRow = item.ID == Model.TipAnalizaID ? "table-success" : "";
+
+            <tr class="@selectedRow">
+                <td>@item.Denumire</td>
+                <td>@item.TipProba</td>
+                <td>@(item.NecesitaNemancat ? "Da" : "Nu")</td>
+                <td>
+                    <a asp-page="./Index" asp-route-id="@item.ID">Select</a> |
+                    <a asp-page="./Edit" asp-route-id="@item.ID">Edit</a> |
+                    <a asp-page="./Details" asp-route-id="@item.ID">Details</a> |
+                    <a asp-page="./Delete" asp-route-id="@item.ID">Delete</a>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
+
+@if (Model.TipAnalizaData.Programari != null && Model.TipAnalizaData.Programari.Any())
+{
+    <h4>Programari care includ analiza selectata</h4>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Data</th>
+                <th>Pacient</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var p in Model.TipAnalizaData.Programari)
+            {
+                <tr>
+                    <td>@p.DataProgramare.ToShortDateString()</td>
+                    <td>@p.Pacient?.NumeComplet</td>
+                    <td>@p.Status</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

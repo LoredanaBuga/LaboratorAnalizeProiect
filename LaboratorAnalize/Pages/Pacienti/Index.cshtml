@@ -1,60 +1,88 @@
-﻿@page
+﻿@page "{id:int?}"
 @model LaboratorAnalize.Pages.Pacienti.IndexModel
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Pacienti";
 }
 
-<h1>Index</h1>
+<h1>Pacienti</h1>
 
 <p>
     <a asp-page="Create">Create New</a>
 </p>
+
 <table class="table">
     <thead>
         <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Pacient[0].Nume)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Pacient[0].Prenume)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Pacient[0].CNP)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Pacient[0].Email)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Pacient[0].Telefon)
-            </th>
+            <th>Nume</th>
+            <th>Prenume</th>
+            <th>CNP</th>
+            <th>Email</th>
+            <th>Telefon</th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model.Pacient) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Nume)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Prenume)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CNP)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Email)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Telefon)
-            </td>
-            <td>
-                <a asp-page="./Edit" asp-route-id="@item.ID">Edit</a> |
-                <a asp-page="./Details" asp-route-id="@item.ID">Details</a> |
-                <a asp-page="./Delete" asp-route-id="@item.ID">Delete</a>
-            </td>
-        </tr>
+@foreach (var item in Model.PacientData.Pacienti)
+{
+    var selectedRow = item.ID == Model.PacientID ? "table-success" : "";
+
+    <tr class="@selectedRow">
+        <td>@item.Nume</td>
+        <td>@item.Prenume</td>
+        <td>@item.CNP</td>
+        <td>@item.Email</td>
+        <td>@item.Telefon</td>
+        <td>
+            <a asp-page="./Index" asp-route-id="@item.ID">Select</a> |
+            <a asp-page="./Edit" asp-route-id="@item.ID">Edit</a> |
+            <a asp-page="./Details" asp-route-id="@item.ID">Details</a> |
+            <a asp-page="./Delete" asp-route-id="@item.ID">Delete</a>
+        </td>
+    </tr>
 }
     </tbody>
 </table>
+
+@if (Model.PacientData.Programari != null && Model.PacientData.Programari.Any())
+{
+    <h4>Programari pentru pacientul selectat</h4>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Data</th>
+                <th>Ora</th>
+                <th>Pachet</th>
+                <th>Analize</th>
+                <th>Status</th>
+                <th>Observatii</th>
+            </tr>
+        </thead>
+        <tbody>
+@foreach (var pr in Model.PacientData.Programari)
+{
+    <tr>
+        <td>@pr.DataProgramare.ToShortDateString()</td>
+        <td>@pr.OraProgramare</td>
+        <td>@pr.PachetAnalize?.Denumire</td>
+        <td>
+            @if (pr.ProgramareTipAnalize != null && pr.ProgramareTipAnalize.Count > 0)
+            {
+                foreach (var a in pr.ProgramareTipAnalize)
+                {
+                    @a.TipAnaliza.Denumire <br />
+                }
+            }
+            else
+            {
+                <span>-</span>
+            }
+        </td>
+        <td>@pr.Status</td>
+        <td>@pr.Observatii</td>
+    </tr>
+}
+        </tbody>
+    </table>
+}

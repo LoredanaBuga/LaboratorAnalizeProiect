@@ -1,29 +1,51 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using LaboratorAnalize.Data;
 using LaboratorAnalize.Models;
+using LaboratorAnalize.Models.ViewModels;
 
 namespace LaboratorAnalize.Pages.TipuriAnalize
 {
     public class IndexModel : PageModel
     {
-        private readonly LaboratorAnalize.Data.LaboratorAnalizeContext _context;
+        private readonly LaboratorAnalizeContext _context;
 
-        public IndexModel(LaboratorAnalize.Data.LaboratorAnalizeContext context)
+        public IndexModel(LaboratorAnalizeContext context)
         {
             _context = context;
         }
 
-        public IList<TipAnaliza> TipAnaliza { get;set; } = default!;
+        public TipAnalizaIndexData TipAnalizaData { get; set; } = default!;
+        public int TipAnalizaID { get; set; }
 
-        public async Task OnGetAsync()
+        public async Task OnGetAsync(int? id)
         {
-            TipAnaliza = await _context.TipAnaliza.ToListAsync();
+            TipAnalizaData = new TipAnalizaIndexData();
+
+            TipAnalizaData.TipuriAnalize = await _context.TipAnaliza
+                .Include(t => t.ProgramareTipAnalize)
+                    .ThenInclude(pt => pt.Programare)
+                        .ThenInclude(p => p.Pacient)
+                .AsNoTracking()
+                .OrderBy(t => t.Denumire)
+                .ToListAsync();
+
+            if (id != null)
+            {
+                TipAnalizaID = id.Value;
+
+                var tip = TipAnalizaData.TipuriAnalize.SingleOrDefault(t => t.ID == id.Value);
+                if (tip != null)
+                {
+                    TipAnalizaData.Programari = (tip.ProgramareTipAnalize ?? new List<ProgramareTipAnaliza>())
+                        .Select(x => x.Programare)
+                        .Distinct()
+                        .ToList();
+                }
+            }
         }
     }
 }

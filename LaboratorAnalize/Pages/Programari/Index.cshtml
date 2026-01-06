@@ -11,18 +11,51 @@
     <a asp-page="Create">Create New</a>
 </p>
 
+<form asp-page="./Index" method="get">
+    <div class="form-actions no-color">
+        <p>
+            Cauta dupa pacient / pachet / analiza:
+            <input type="text" name="searchString" value="@Model.CurrentFilter" />
+            <input type="submit" value="Search" class="btn btn-primary" /> |
+            <a asp-page="./Index">Back to full List</a>
+        </p>
+    </div>
+</form>
+
 <table class="table">
     <thead>
         <tr>
-            <th>Data programare</th>
-            <th>Status</th>
-            <th>Pacient</th>
+            <th>
+                <a asp-page="./Index"
+                   asp-route-sortOrder="@Model.DataSort"
+                   asp-route-searchString="@Model.CurrentFilter">
+                    Data programare
+                </a>
+            </th>
+
+            <th>
+                <a asp-page="./Index"
+                   asp-route-sortOrder="@Model.StatusSort"
+                   asp-route-searchString="@Model.CurrentFilter">
+                    Status
+                </a>
+            </th>
+
+            <th>
+                <a asp-page="./Index"
+                   asp-route-sortOrder="@Model.PacientSort"
+                   asp-route-searchString="@Model.CurrentFilter">
+                    Pacient
+                </a>
+            </th>
+
             <th>Pachet analize</th>
             <th>Analize selectate</th>
             <th>Observatii</th>
             <th></th>
         </tr>
     </thead>
+
     <tbody>
 @foreach (var item in Model.ProgramareD.Programari)
 {
