@@ -1,0 +1,60 @@
+﻿@page
+@model LaboratorAnalize.Pages.Programari.EditModel
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h1>Edit</h1>
+
+<h4>Programare</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Programare.ID" />
+            <div class="form-group">
+                <label asp-for="Programare.DataProgramare" class="control-label"></label>
+                <input asp-for="Programare.DataProgramare" class="form-control" />
+                <span asp-validation-for="Programare.DataProgramare" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Programare.Status" class="control-label"></label>
+                <input asp-for="Programare.Status" class="form-control" />
+                <span asp-validation-for="Programare.Status" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Programare.PacientID" class="control-label"></label>
+                <select asp-for="Programare.PacientID" class="form-control" asp-items="ViewBag.PacientID" ></select>
+                <span asp-validation-for="Programare.PacientID" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Programare.PachetAnalizeID" class="control-label"></label>
+                <select asp-for="Programare.PachetAnalizeID" class="form-control" asp-items="ViewBag.PachetAnalizeID" ></select>
+                <span asp-validation-for="Programare.PachetAnalizeID" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Programare.OraProgramare" class="control-label"></label>
+                <input asp-for="Programare.OraProgramare" class="form-control" />
+                <span asp-validation-for="Programare.OraProgramare" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Programare.Observatii" class="control-label"></label>
+                <input asp-for="Programare.Observatii" class="form-control" />
+                <span asp-validation-for="Programare.Observatii" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-page="./Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
