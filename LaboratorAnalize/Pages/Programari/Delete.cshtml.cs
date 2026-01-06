@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
@@ -12,9 +9,9 @@ namespace LaboratorAnalize.Pages.Programari
 {
     public class DeleteModel : PageModel
     {
-        private readonly LaboratorAnalize.Data.LaboratorAnalizeContext _context;
+        private readonly LaboratorAnalizeContext _context;
 
-        public DeleteModel(LaboratorAnalize.Data.LaboratorAnalizeContext context)
+        public DeleteModel(LaboratorAnalizeContext context)
         {
             _context = context;
         }
@@ -29,16 +26,19 @@ namespace LaboratorAnalize.Pages.Programari
                 return NotFound();
             }
 
-            var programare = await _context.Programare.FirstOrDefaultAsync(m => m.ID == id);
+            Programare = await _context.Programare
+                .Include(p => p.Pacient)
+                .Include(p => p.PachetAnalize)
+                .Include(p => p.ProgramareTipAnalize)
+                    .ThenInclude(pt => pt.TipAnaliza)
+                .AsNoTracking()
+                .FirstOrDefaultAsync(m => m.ID == id);
 
-            if (programare == null)
+            if (Programare == null)
             {
                 return NotFound();
             }
-            else
-            {
-                Programare = programare;
-            }
+
             return Page();
         }
 
@@ -49,13 +49,22 @@ namespace LaboratorAnalize.Pages.Programari
                 return NotFound();
             }
 
-            var programare = await _context.Programare.FindAsync(id);
-            if (programare != null)
+            var programare = await _context.Programare
+                .Include(p => p.ProgramareTipAnalize)
+                .FirstOrDefaultAsync(p => p.ID == id);
+
+            if (programare == null)
             {
-                Programare = programare;
-                _context.Programare.Remove(Programare);
-                await _context.SaveChangesAsync();
+                return RedirectToPage("./Index");
             }
+
+            if (programare.ProgramareTipAnalize != null && programare.ProgramareTipAnalize.Count > 0)
+            {
+                _context.ProgramareTipAnaliza.RemoveRange(programare.ProgramareTipAnalize);
+            }
+
+            _context.Programare.Remove(programare);
+            await _context.SaveChangesAsync();
 
             return RedirectToPage("./Index");
         }

@@ -10,32 +10,52 @@ using LaboratorAnalize.Models;
 
 namespace LaboratorAnalize.Pages.Programari
 {
-    public class CreateModel : PageModel
+    public class CreateModel : ProgramareTipAnalizePageModel
     {
-        private readonly LaboratorAnalize.Data.LaboratorAnalizeContext _context;
+        private readonly LaboratorAnalizeContext _context;
 
-        public CreateModel(LaboratorAnalize.Data.LaboratorAnalizeContext context)
+        public CreateModel(LaboratorAnalizeContext context)
         {
             _context = context;
         }
 
         public IActionResult OnGet()
         {
-        ViewData["PacientID"] = new SelectList(_context.Pacient, "ID", "NumeComplet");
-        ViewData["PachetAnalizeID"] = new SelectList(_context.PachetAnalize, "ID", "Denumire");
+            ViewData["PacientID"] = new SelectList(_context.Pacient, "ID", "NumeComplet");
+            ViewData["PachetAnalizeID"] = new SelectList(_context.PachetAnalize, "ID", "Denumire");
+
+            var programare = new Programare();
+            programare.ProgramareTipAnalize = new List<ProgramareTipAnaliza>();
+
+            PopulateAssignedTipAnalizaData(_context, programare);
+
             return Page();
         }
 
         [BindProperty]
-        public Programare Programare { get; set; } = default!;
+        public Programare Programare { get; set; } = new Programare();
 
-        // For more information, see https://aka.ms/RazorPagesCRUD.
-        public async Task<IActionResult> OnPostAsync()
+        public async Task<IActionResult> OnPostAsync(string[] selectedTipuriAnalize)
         {
+            if (selectedTipuriAnalize != null)
+            {
+                Programare.ProgramareTipAnalize = new List<ProgramareTipAnaliza>();
+
+                foreach (var a in selectedTipuriAnalize)
+                {
+                    Programare.ProgramareTipAnalize.Add(new ProgramareTipAnaliza
+                    {
+                        TipAnalizaID = int.Parse(a)
+                    });
+                }
+            }
+
             if (!ModelState.IsValid)
             {
                 ViewData["PacientID"] = new SelectList(_context.Pacient, "ID", "NumeComplet");
                 ViewData["PachetAnalizeID"] = new SelectList(_context.PachetAnalize, "ID", "Denumire");
+
+                PopulateAssignedTipAnalizaData(_context, Programare);
                 return Page();
             }
 

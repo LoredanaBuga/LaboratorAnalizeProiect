@@ -1,0 +1,37 @@
+﻿@page
+@model LaboratorAnalize.Pages.TipuriAnalize.DetailsModel
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h1>Details</h1>
+
+<div>
+    <h4>TipAnaliza</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.TipAnaliza.Denumire)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.TipAnaliza.Denumire)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.TipAnaliza.TipProba)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.TipAnaliza.TipProba)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.TipAnaliza.NecesitaNemancat)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.TipAnaliza.NecesitaNemancat)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-page="./Edit" asp-route-id="@Model.TipAnaliza.ID">Edit</a> |
+    <a asp-page="./Index">Back to List</a>
+</div>

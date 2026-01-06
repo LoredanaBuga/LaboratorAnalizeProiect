@@ -40,8 +40,33 @@
                 <select asp-for="Programare.PachetAnalizeID" class="form-control" asp-items="ViewBag.PachetAnalizeID">
                     <option value="">-- Selecteaza pachet --</option>
                 </select>
+                <small class="text-muted">
+                    Pachetul este orientativ. Mai jos poti selecta analizele exacte.
+                </small>
                 <span asp-validation-for="Programare.PachetAnalizeID" class="text-danger"></span>
             </div>
+            <div class="form-group">
+                <label class="control-label">Tipuri analize</label>
+                <small class="text-muted">
+                    Bifeaza analizele care vor fi efectuate la aceasta programare.
+                </small>
+
+                <div class="row">
+                    @foreach (var a in Model.AssignedTipAnalizaDataList)
+                    {
+                        <div class="col-md-4">
+                            <div class="form-check">
+                                <input class="form-check-input"
+                                       type="checkbox"
+                                       name="selectedTipuriAnalize"
+                                       value="@a.TipAnalizaID" />
+                                <label class="form-check-label">@a.Name</label>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+
             <div class="form-group">
                 <label asp-for="Programare.OraProgramare" class="control-label"></label>
                 <input asp-for="Programare.OraProgramare" class="form-control" />

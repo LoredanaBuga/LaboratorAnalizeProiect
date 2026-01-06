@@ -1,0 +1,40 @@
+﻿@page
+@model LaboratorAnalize.Pages.TipuriAnalize.DeleteModel
+
+@{
+    ViewData["Title"] = "Delete";
+}
+
+<h1>Delete</h1>
+
+<h3>Are you sure you want to delete this?</h3>
+<div>
+    <h4>TipAnaliza</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.TipAnaliza.Denumire)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.TipAnaliza.Denumire)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.TipAnaliza.TipProba)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.TipAnaliza.TipProba)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.TipAnaliza.NecesitaNemancat)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.TipAnaliza.NecesitaNemancat)
+        </dd>
+    </dl>
+    
+    <form method="post">
+        <input type="hidden" asp-for="TipAnaliza.ID" />
+        <input type="submit" value="Delete" class="btn btn-danger" /> |
+        <a asp-page="./Index">Back to List</a>
+    </form>
+</div>

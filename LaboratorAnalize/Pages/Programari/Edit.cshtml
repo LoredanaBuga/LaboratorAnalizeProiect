@@ -14,36 +14,67 @@
         <form method="post">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="Programare.ID" />
+
             <div class="form-group">
                 <label asp-for="Programare.DataProgramare" class="control-label"></label>
                 <input asp-for="Programare.DataProgramare" class="form-control" />
                 <span asp-validation-for="Programare.DataProgramare" class="text-danger"></span>
             </div>
+
             <div class="form-group">
                 <label asp-for="Programare.Status" class="control-label"></label>
-                <input asp-for="Programare.Status" class="form-control" />
+                <select asp-for="Programare.Status" class="form-control">
+                    <option value="In asteptare">In asteptare</option>
+                    <option value="Confirmata">Confirmata</option>
+                    <option value="Finalizata">Finalizata</option>
+                </select>
                 <span asp-validation-for="Programare.Status" class="text-danger"></span>
             </div>
+
             <div class="form-group">
                 <label asp-for="Programare.PacientID" class="control-label"></label>
-                <select asp-for="Programare.PacientID" class="form-control" asp-items="ViewBag.PacientID" ></select>
+                <select asp-for="Programare.PacientID" class="form-control" asp-items="ViewBag.PacientID"></select>
                 <span asp-validation-for="Programare.PacientID" class="text-danger"></span>
             </div>
+
             <div class="form-group">
                 <label asp-for="Programare.PachetAnalizeID" class="control-label"></label>
-                <select asp-for="Programare.PachetAnalizeID" class="form-control" asp-items="ViewBag.PachetAnalizeID" ></select>
+                <select asp-for="Programare.PachetAnalizeID" class="form-control" asp-items="ViewBag.PachetAnalizeID"></select>
                 <span asp-validation-for="Programare.PachetAnalizeID" class="text-danger"></span>
             </div>
+
+            <div class="form-group">
+                <label class="control-label">Tipuri analize</label>
+
+                <div class="row">
+                    @foreach (var a in Model.AssignedTipAnalizaDataList)
+                    {
+                        <div class="col-md-4">
+                            <div class="form-check">
+                                <input class="form-check-input"
+                                       type="checkbox"
+                                       name="selectedTipuriAnalize"
+                                       value="@a.TipAnalizaID"
+                                       checked="@a.Assigned" />
+                                <label class="form-check-label">@a.Name</label>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+
             <div class="form-group">
                 <label asp-for="Programare.OraProgramare" class="control-label"></label>
                 <input asp-for="Programare.OraProgramare" class="form-control" />
                 <span asp-validation-for="Programare.OraProgramare" class="text-danger"></span>
             </div>
+
             <div class="form-group">
                 <label asp-for="Programare.Observatii" class="control-label"></label>
                 <input asp-for="Programare.Observatii" class="form-control" />
                 <span asp-validation-for="Programare.Observatii" class="text-danger"></span>
             </div>
+
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
             </div>
@@ -56,5 +87,7 @@
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }

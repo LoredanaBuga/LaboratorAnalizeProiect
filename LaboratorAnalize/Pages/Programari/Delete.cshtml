@@ -7,37 +7,45 @@
 
 <h1>Delete</h1>
 
-<h3>Are you sure you want to delete this?</h3>
+<h3>Esti sigur ca vrei sa stergi aceasta programare?</h3>
+
 <div>
     <h4>Programare</h4>
     <hr />
     <dl class="row">
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Programare.DataProgramare)
-        </dt>
+        <dt class="col-sm-2">Data programare</dt>
+        <dd class="col-sm-10">@Model.Programare.DataProgramare.ToShortDateString()</dd>
+
+        <dt class="col-sm-2">Status</dt>
+        <dd class="col-sm-10">@Model.Programare.Status</dd>
+
+        <dt class="col-sm-2">Pacient</dt>
+        <dd class="col-sm-10">@Model.Programare.Pacient?.NumeComplet</dd>
+
+        <dt class="col-sm-2">Pachet analize</dt>
+        <dd class="col-sm-10">@Model.Programare.PachetAnalize?.Denumire</dd>
+
+        <dt class="col-sm-2">Tipuri analize</dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Programare.DataProgramare)
+            @if (Model.Programare.ProgramareTipAnalize != null && Model.Programare.ProgramareTipAnalize.Count > 0)
+            {
+                <ul>
+                    @foreach (var a in Model.Programare.ProgramareTipAnalize)
+                    {
+                        <li>@a.TipAnaliza.Denumire (@a.TipAnaliza.TipProba)</li>
+                    }
+                </ul>
+            }
+            else
+            {
+                <span>-</span>
+            }
         </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Programare.Status)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Programare.Status)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Programare.Pacient)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Programare.Pacient.ID)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Programare.PachetAnalize)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Programare.PachetAnalize.ID)
-        </dd>
+
+        <dt class="col-sm-2">Observatii</dt>
+        <dd class="col-sm-10">@Model.Programare.Observatii</dd>
     </dl>
-    
+
     <form method="post">
         <input type="hidden" asp-for="Programare.ID" />
         <input type="submit" value="Delete" class="btn btn-danger" /> |

@@ -30,5 +30,7 @@ namespace LaboratorAnalize.Models
         [Display(Name = "Pachet analize")]
         public int? PachetAnalizeID { get; set; }
         public PachetAnalize? PachetAnalize { get; set; }
+
+        public ICollection<ProgramareTipAnaliza>? ProgramareTipAnalize { get; set; }
     }
 }

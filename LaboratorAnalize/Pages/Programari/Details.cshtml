@@ -17,23 +17,39 @@
         <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Programare.DataProgramare)
         </dd>
+
         <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Programare.Status)
         </dt>
         <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Programare.Status)
         </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Programare.Pacient)
-        </dt>
+
+        <dt class="col-sm-2">Pacient</dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Programare.Pacient.ID)
+            @Html.DisplayFor(model => model.Programare.Pacient.NumeComplet)
         </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Programare.PachetAnalize)
-        </dt>
+
+        <dt class="col-sm-2">Pachet analize</dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Programare.PachetAnalize.ID)
+            @Html.DisplayFor(model => model.Programare.PachetAnalize.Denumire)
+        </dd>
+
+        <dt class="col-sm-2">Tipuri analize</dt>
+        <dd class="col-sm-10">
+            @if (Model.Programare.ProgramareTipAnalize != null && Model.Programare.ProgramareTipAnalize.Count > 0)
+            {
+                <ul>
+                    @foreach (var a in Model.Programare.ProgramareTipAnalize)
+                    {
+                        <li>@a.TipAnaliza.Denumire (@a.TipAnaliza.TipProba)</li>
+                    }
+                </ul>
+            }
+            else
+            {
+                <span>-</span>
+            }
         </dd>
     </dl>
 </div>

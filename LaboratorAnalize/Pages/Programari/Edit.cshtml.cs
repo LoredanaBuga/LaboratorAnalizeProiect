@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
@@ -11,11 +10,11 @@ using LaboratorAnalize.Models;
 
 namespace LaboratorAnalize.Pages.Programari
 {
-    public class EditModel : PageModel
+    public class EditModel : ProgramareTipAnalizePageModel
     {
-        private readonly LaboratorAnalize.Data.LaboratorAnalizeContext _context;
+        private readonly LaboratorAnalizeContext _context;
 
-        public EditModel(LaboratorAnalize.Data.LaboratorAnalizeContext context)
+        public EditModel(LaboratorAnalizeContext context)
         {
             _context = context;
         }
@@ -30,50 +29,69 @@ namespace LaboratorAnalize.Pages.Programari
                 return NotFound();
             }
 
-            var programare =  await _context.Programare.FirstOrDefaultAsync(m => m.ID == id);
-            if (programare == null)
+            Programare = await _context.Programare
+                .Include(p => p.Pacient)
+                .Include(p => p.PachetAnalize)
+                .Include(p => p.ProgramareTipAnalize)
+                    .ThenInclude(pt => pt.TipAnaliza)
+                .AsNoTracking()
+                .FirstOrDefaultAsync(m => m.ID == id);
+
+            if (Programare == null)
             {
                 return NotFound();
             }
-            Programare = programare;
-           ViewData["PachetAnalizeID"] = new SelectList(_context.Set<PachetAnalize>(), "ID", "ID");
-           ViewData["PacientID"] = new SelectList(_context.Set<Pacient>(), "ID", "ID");
+
+            PopulateAssignedTipAnalizaData(_context, Programare);
+
+            ViewData["PachetAnalizeID"] = new SelectList(_context.PachetAnalize, "ID", "Denumire");
+            ViewData["PacientID"] = new SelectList(_context.Pacient, "ID", "NumeComplet");
+
             return Page();
         }
 
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more information, see https://aka.ms/RazorPagesCRUD.
-        public async Task<IActionResult> OnPostAsync()
+        public async Task<IActionResult> OnPostAsync(int? id, string[] selectedTipuriAnalize)
         {
-            if (!ModelState.IsValid)
+            if (id == null)
             {
-                return Page();
+                return NotFound();
             }
 
-            _context.Attach(Programare).State = EntityState.Modified;
+            var programareToUpdate = await _context.Programare
+                .Include(p => p.Pacient)
+                .Include(p => p.PachetAnalize)
+                .Include(p => p.ProgramareTipAnalize)
+                    .ThenInclude(pt => pt.TipAnaliza)
+                .FirstOrDefaultAsync(p => p.ID == id);
 
-            try
+            if (programareToUpdate == null)
             {
+                return NotFound();
+            }
+
+            if (await TryUpdateModelAsync(
+                programareToUpdate,
+                "Programare",
+                p => p.DataProgramare,
+                p => p.OraProgramare,
+                p => p.Status,
+                p => p.Observatii,
+                p => p.PacientID,
+                p => p.PachetAnalizeID))
+            {
+                UpdateProgramareTipAnalize(_context, selectedTipuriAnalize, programareToUpdate);
                 await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!ProgramareExists(Programare.ID))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                return RedirectToPage("./Index");
             }
 
-            return RedirectToPage("./Index");
-        }
+            // daca nu s-a validat modelul, repopulezi checkbox-urile si dropdown-urile
+            UpdateProgramareTipAnalize(_context, selectedTipuriAnalize, programareToUpdate);
+            PopulateAssignedTipAnalizaData(_context, programareToUpdate);
 
-        private bool ProgramareExists(int id)
-        {
-            return _context.Programare.Any(e => e.ID == id);
+            ViewData["PachetAnalizeID"] = new SelectList(_context.PachetAnalize, "ID", "Denumire");
+            ViewData["PacientID"] = new SelectList(_context.Pacient, "ID", "NumeComplet");
+
+            return Page();
         }
     }
 }

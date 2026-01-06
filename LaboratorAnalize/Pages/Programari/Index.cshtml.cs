@@ -19,14 +19,27 @@ namespace LaboratorAnalize.Pages.Programari
             _context = context;
         }
 
-        public IList<Programare> Programare { get;set; } = default!;
+        public ProgramareData ProgramareD { get; set; } = default!;
+        public int ProgramareID { get; set; }
 
-        public async Task OnGetAsync()
+        public async Task OnGetAsync(int ? id)
         {
-            Programare = await _context.Programare
+            ProgramareD = new ProgramareData();
+
+            ProgramareD.Programari = await _context.Programare
                 .Include(p => p.Pacient)
                 .Include(p => p.PachetAnalize)
+                .Include(p => p.ProgramareTipAnalize).ThenInclude(pt => pt.TipAnaliza)
+                .AsNoTracking()
+                .OrderBy(p => p.DataProgramare)
                 .ToListAsync();
+
+            if (id != null)
+            {
+                ProgramareID = id.Value;
+                var programare = ProgramareD.Programari.Where(i => i.ID == id.Value).Single();
+                ProgramareD.TipuriAnalize = (programare.ProgramareTipAnalize ?? new List<ProgramareTipAnaliza>()).Select(s => s.TipAnaliza);
+            }
         }
     }
 }
