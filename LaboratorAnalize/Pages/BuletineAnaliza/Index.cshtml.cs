@@ -1,30 +1,41 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using LaboratorAnalize.Data;
-using LaboratorAnalize.Models;
+using LaboratorAnalize.Models.ViewModels;
 
 namespace LaboratorAnalize.Pages.BuletineAnaliza
 {
     public class IndexModel : PageModel
     {
-        private readonly LaboratorAnalize.Data.LaboratorAnalizeContext _context;
+        private readonly LaboratorAnalizeContext _context;
 
-        public IndexModel(LaboratorAnalize.Data.LaboratorAnalizeContext context)
+        public IndexModel(LaboratorAnalizeContext context)
         {
             _context = context;
         }
 
-        public IList<BuletinAnalize> BuletinAnalize { get;set; } = default!;
+        public BuletinAnalizeIndexData Data { get; set; } = new BuletinAnalizeIndexData();
+        public int BuletinID { get; set; }
 
-        public async Task OnGetAsync()
+        public async Task OnGetAsync(int? id)
         {
-            BuletinAnalize = await _context.BuletinAnalize
-                .Include(b => b.Programare).ToListAsync();
+            Data.Buletine = await _context.BuletinAnalize
+        .Include(b => b.Programare)
+            .ThenInclude(p => p.Pacient)
+        .Include(b => b.Rezultate) // Modificat aici (fără "Analize")
+            .ThenInclude(r => r.TipAnaliza)
+        .AsNoTracking()
+        .OrderByDescending(b => b.DataEliberare) // Acum ar trebui să meargă dacă ai using-ul pus
+        .ToListAsync();
+
+            if (id != null)
+            {
+                BuletinID = id.Value;
+                var buletin = Data.Buletine.First(b => b.ID == id.Value);
+                Data.Rezultate = buletin.Rezultate; // Modificat aici
+            }
         }
     }
 }

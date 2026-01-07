@@ -2,47 +2,71 @@
 @model LaboratorAnalize.Pages.BuletineAnaliza.IndexModel
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Buletine Analize";
 }
 
-<h1>Index</h1>
+<h1>Buletine Analize</h1>
 
 <p>
     <a asp-page="Create">Create New</a>
 </p>
+
 <table class="table">
     <thead>
         <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.BuletinAnalize[0].Programare)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.BuletinAnalize[0].DataEliberare)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.BuletinAnalize[0].Observatii)
-            </th>
+            <th>Pacient</th>
+            <th>Data programare</th>
+            <th>Data eliberare</th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model.BuletinAnalize) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Programare.ID)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.DataEliberare)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Observatii)
-            </td>
-            <td>
-                <a asp-page="./Edit" asp-route-id="@item.ID">Edit</a> |
-                <a asp-page="./Details" asp-route-id="@item.ID">Details</a> |
-                <a asp-page="./Delete" asp-route-id="@item.ID">Delete</a>
-            </td>
-        </tr>
-}
+        @foreach (var item in Model.Data.Buletine)
+        {
+            var selectedRow = item.ID == Model.BuletinID ? "table-success" : "";
+
+            <tr class="@selectedRow">
+                <td>@item.Programare?.Pacient?.NumeComplet</td>
+                <td>@item.Programare?.DataProgramare.ToShortDateString()</td>
+                <td>@item.DataEliberare.ToShortDateString()</td>
+                <td>
+                    <a asp-page="./Index" asp-route-id="@item.ID">Select</a> |
+                    <a asp-page="./Edit" asp-route-id="@item.ID">Edit</a> |
+                    <a asp-page="./Details" asp-route-id="@item.ID">Details</a> |
+                    <a asp-page="./Delete" asp-route-id="@item.ID">Delete</a>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
+
+@if (Model.Data.Rezultate != null && Model.Data.Rezultate.Any())
+{
+    <h4>Rezultatele buletinului selectat</h4>
+
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Analiza</th>
+                <th>Valoare</th>
+                <th>Unitate</th>
+                <th>Interval</th>
+                <th>In limite</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var r in Model.Data.Rezultate)
+            {
+                <tr>
+                    <td>@r.TipAnaliza?.Denumire</td>
+                    <td>@r.Valoare</td>
+                    <td>@r.Unitate</td>
+                    <td>@r.IntervalReferinta</td>
+                    <td>
+                        @(r.InLimite ? "DA" : "NU")
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

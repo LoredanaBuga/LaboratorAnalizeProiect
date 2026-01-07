@@ -8,47 +8,46 @@
 <h1>Details</h1>
 
 <div>
-    <h4>RezultatAnaliza</h4>
+    <h4>Rezultat analiza</h4>
     <hr />
     <dl class="row">
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.RezultatAnaliza.BuletinAnalize)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.RezultatAnaliza.BuletinAnalize.ID)
+
+        <dt class="col-sm-3">Buletin (Pacient + Data)</dt>
+        <dd class="col-sm-9">
+            @Model.RezultatAnaliza.BuletinAnalize.Programare.Pacient.NumeComplet
+            -
+            @Model.RezultatAnaliza.BuletinAnalize.Programare.DataProgramare.ToShortDateString()
         </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.RezultatAnaliza.TipAnaliza)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.RezultatAnaliza.TipAnaliza.ID)
+
+        <dt class="col-sm-3">Analiza</dt>
+        <dd class="col-sm-9">
+            @Model.RezultatAnaliza.TipAnaliza.Denumire
+            (@Model.RezultatAnaliza.TipAnaliza.TipProba)
         </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.RezultatAnaliza.Valoare)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.RezultatAnaliza.Valoare)
+
+        <dt class="col-sm-3">Valoare rezultat</dt>
+        <dd class="col-sm-9">
+            @Model.RezultatAnaliza.Valoare
         </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.RezultatAnaliza.Unitate)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.RezultatAnaliza.Unitate)
+
+        <dt class="col-sm-3">Unitate de masura</dt>
+        <dd class="col-sm-9">
+            @Model.RezultatAnaliza.Unitate
         </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.RezultatAnaliza.IntervalReferinta)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.RezultatAnaliza.IntervalReferinta)
+
+        <dt class="col-sm-3">Interval referinta</dt>
+        <dd class="col-sm-9">
+            @Model.RezultatAnaliza.IntervalReferinta
         </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.RezultatAnaliza.InLimite)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.RezultatAnaliza.InLimite)
+
+        <dt class="col-sm-3">Este in limite?</dt>
+        <dd class="col-sm-9">
+            @(Model.RezultatAnaliza.InLimite ? "Da" : "Nu")
         </dd>
+
     </dl>
 </div>
+
 <div>
     <a asp-page="./Edit" asp-route-id="@Model.RezultatAnaliza.ID">Edit</a> |
     <a asp-page="./Index">Back to List</a>

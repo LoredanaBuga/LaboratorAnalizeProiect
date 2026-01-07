@@ -21,9 +21,14 @@ namespace LaboratorAnalize.Pages.RezultateAnalize
         [BindProperty]
         public RezultatAnaliza RezultatAnaliza { get; set; } = new RezultatAnaliza();
 
-        public IActionResult OnGet()
+        public IActionResult OnGet(int? buletinId)
         {
-            PopulateDropDowns();
+            if (buletinId != null)
+            {
+                RezultatAnaliza.BuletinAnalizeID = buletinId;
+            }
+
+            PopulateDropDowns(RezultatAnaliza.BuletinAnalizeID, RezultatAnaliza.TipAnalizaID);
             return Page();
         }
 
@@ -31,12 +36,16 @@ namespace LaboratorAnalize.Pages.RezultateAnalize
         {
             if (!ModelState.IsValid)
             {
-                PopulateDropDowns();
+                PopulateDropDowns(RezultatAnaliza.BuletinAnalizeID, RezultatAnaliza.TipAnalizaID);
                 return Page();
             }
 
             _context.RezultatAnaliza.Add(RezultatAnaliza);
             await _context.SaveChangesAsync();
+            if (RezultatAnaliza.BuletinAnalizeID != null)
+            {
+                return RedirectToPage("/BuletineAnaliza/Index", new { id = RezultatAnaliza.BuletinAnalizeID });
+            }
 
             return RedirectToPage("./Index");
         }

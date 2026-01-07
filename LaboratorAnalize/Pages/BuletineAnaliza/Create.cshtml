@@ -17,9 +17,8 @@
                 <label asp-for="BuletinAnalize.ProgramareID" class="control-label"></label>
                 <select asp-for="BuletinAnalize.ProgramareID" class="form-control" asp-items="ViewBag.ProgramareID">
                     <option value="">-- Selecteaza programarea (pacient + data) --</option>
-                    <span asp-validation-for="BuletinAnalize.ProgramareID" class="text-danger"></span>
-
                 </select>
+                <span asp-validation-for="BuletinAnalize.ProgramareID" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="BuletinAnalize.DataEliberare" class="control-label"></label>

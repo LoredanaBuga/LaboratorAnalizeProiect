@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
@@ -18,12 +19,14 @@ namespace LaboratorAnalize.Pages.Programari
 
         public Programare Programare { get; set; } = default!;
 
+        // Buletin + rezultate pentru programarea curenta
+        public BuletinAnalize? Buletin { get; set; }
+        public IList<RezultatAnaliza> Rezultate { get; set; } = new List<RezultatAnaliza>();
+
         public async Task<IActionResult> OnGetAsync(int? id)
         {
             if (id == null)
-            {
                 return NotFound();
-            }
 
             Programare = await _context.Programare
                 .Include(p => p.Pacient)
@@ -34,8 +37,18 @@ namespace LaboratorAnalize.Pages.Programari
                 .FirstOrDefaultAsync(m => m.ID == id);
 
             if (Programare == null)
-            {
                 return NotFound();
+
+            // cauta buletinul emis pentru aceasta programare
+            Buletin = await _context.BuletinAnalize
+                .Include(b => b.Rezultate)
+                    .ThenInclude(r => r.TipAnaliza)
+                .AsNoTracking()
+                .FirstOrDefaultAsync(b => b.ProgramareID == id);
+
+            if (Buletin != null && Buletin.Rezultate != null)
+            {
+                Rezultate = new List<RezultatAnaliza>(Buletin.Rezultate);
             }
 
             return Page();

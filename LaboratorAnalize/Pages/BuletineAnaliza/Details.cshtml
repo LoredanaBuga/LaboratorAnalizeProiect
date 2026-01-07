@@ -2,36 +2,98 @@
 @model LaboratorAnalize.Pages.BuletineAnaliza.DetailsModel
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Detalii buletin";
 }
 
-<h1>Details</h1>
+<h1>Detalii buletin</h1>
 
-<div>
-    <h4>BuletinAnalize</h4>
+<div class="mb-3">
+    <h4>Buletin Analize #@Model.BuletinAnalize.ID</h4>
     <hr />
+
     <dl class="row">
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.BuletinAnalize.Programare)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.BuletinAnalize.Programare.ID)
+        <dt class="col-sm-3">Pacient</dt>
+        <dd class="col-sm-9">
+            @Model.BuletinAnalize.Programare?.Pacient?.NumeComplet
         </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.BuletinAnalize.DataEliberare)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.BuletinAnalize.DataEliberare)
+
+        <dt class="col-sm-3">Data programare</dt>
+        <dd class="col-sm-9">
+            @Model.BuletinAnalize.Programare?.DataProgramare.ToShortDateString()
         </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.BuletinAnalize.Observatii)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.BuletinAnalize.Observatii)
+
+        <dt class="col-sm-3">Pachet analize</dt>
+        <dd class="col-sm-9">
+            @Model.BuletinAnalize.Programare?.PachetAnalize?.Denumire
+        </dd>
+
+        <dt class="col-sm-3">Data eliberare</dt>
+        <dd class="col-sm-9">
+            @Model.BuletinAnalize.DataEliberare.ToShortDateString()
+        </dd>
+
+        <dt class="col-sm-3">Observatii buletin</dt>
+        <dd class="col-sm-9">
+            @(string.IsNullOrWhiteSpace(Model.BuletinAnalize.Observatii) ? "-" : Model.BuletinAnalize.Observatii)
         </dd>
     </dl>
 </div>
-<div>
-    <a asp-page="./Edit" asp-route-id="@Model.BuletinAnalize.ID">Edit</a> |
-    <a asp-page="./Index">Back to List</a>
+
+<div class="mb-3">
+    <a class="btn btn-outline-success"
+       asp-page="/RezultateAnalize/Create"
+       asp-route-buletinId="@Model.BuletinAnalize.ID">
+        Adauga rezultat
+    </a>
+
+    <a class="btn btn-outline-primary ms-2"
+       asp-page="./Edit"
+       asp-route-id="@Model.BuletinAnalize.ID">
+        Editeaza buletin
+    </a>
+
+    <a class="btn btn-link ms-2" asp-page="./Index">Back to List</a>
 </div>
+
+<hr />
+
+<h4>Rezultate analize</h4>
+
+@if (Model.BuletinAnalize.Rezultate != null && Model.BuletinAnalize.Rezultate.Count > 0)
+{
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Analiza</th>
+                <th>Tip proba</th>
+                <th>Valoare</th>
+                <th>Unitate</th>
+                <th>Interval referinta</th>
+                <th>In limite</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var r in Model.BuletinAnalize.Rezultate)
+            {
+                <tr>
+                    <td>@r.TipAnaliza?.Denumire</td>
+                    <td>@r.TipAnaliza?.TipProba</td>
+                    <td>@r.Valoare</td>
+                    <td>@r.Unitate</td>
+                    <td>@r.IntervalReferinta</td>
+                    <td>@(r.InLimite ? "DA" : "NU")</td>
+                    <td>
+                        <a asp-page="/RezultateAnalize/Edit" asp-route-id="@r.ID">Edit</a> |
+                        <a asp-page="/RezultateAnalize/Details" asp-route-id="@r.ID">Details</a> |
+                        <a asp-page="/RezultateAnalize/Delete" asp-route-id="@r.ID">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p class="text-muted">Nu exista rezultate introduse pentru acest buletin.</p>
+}

@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
@@ -12,9 +9,9 @@ namespace LaboratorAnalize.Pages.RezultateAnalize
 {
     public class DetailsModel : PageModel
     {
-        private readonly LaboratorAnalize.Data.LaboratorAnalizeContext _context;
+        private readonly LaboratorAnalizeContext _context;
 
-        public DetailsModel(LaboratorAnalize.Data.LaboratorAnalizeContext context)
+        public DetailsModel(LaboratorAnalizeContext context)
         {
             _context = context;
         }
@@ -28,15 +25,19 @@ namespace LaboratorAnalize.Pages.RezultateAnalize
                 return NotFound();
             }
 
-            var rezultatanaliza = await _context.RezultatAnaliza.FirstOrDefaultAsync(m => m.ID == id);
-            if (rezultatanaliza == null)
+            RezultatAnaliza = await _context.RezultatAnaliza
+                .Include(r => r.TipAnaliza)
+                .Include(r => r.BuletinAnalize)
+                    .ThenInclude(b => b.Programare)
+                        .ThenInclude(p => p.Pacient)
+                .AsNoTracking()
+                .FirstOrDefaultAsync(m => m.ID == id);
+
+            if (RezultatAnaliza == null)
             {
                 return NotFound();
             }
-            else
-            {
-                RezultatAnaliza = rezultatanaliza;
-            }
+
             return Page();
         }
     }
