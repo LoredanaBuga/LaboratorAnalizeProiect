@@ -23,9 +23,10 @@ namespace LaboratorAnalize.Pages.RezultateAnalize
 
         public IActionResult OnGet(int? buletinId)
         {
-            if (buletinId != null)
+            // preselecteaza buletinul daca vii din Buletin Details
+            if (buletinId.HasValue)
             {
-                RezultatAnaliza.BuletinAnalizeID = buletinId;
+                RezultatAnaliza.BuletinAnalizeID = buletinId.Value; // ✅ int? -> int
             }
 
             PopulateDropDowns(RezultatAnaliza.BuletinAnalizeID, RezultatAnaliza.TipAnalizaID);
@@ -42,15 +43,12 @@ namespace LaboratorAnalize.Pages.RezultateAnalize
 
             _context.RezultatAnaliza.Add(RezultatAnaliza);
             await _context.SaveChangesAsync();
-            if (RezultatAnaliza.BuletinAnalizeID != null)
-            {
-                return RedirectToPage("/BuletineAnaliza/Index", new { id = RezultatAnaliza.BuletinAnalizeID });
-            }
 
-            return RedirectToPage("./Index");
+            // dupa creare, te intorci la buletinul selectat (Details e si mai logic)
+            return RedirectToPage("/BuletineAnaliza/Details", new { id = RezultatAnaliza.BuletinAnalizeID });
         }
 
-        private void PopulateDropDowns(int? selectedBuletin = null, int? selectedTip = null)
+        private void PopulateDropDowns(int selectedBuletin, int selectedTip)
         {
             var buletine = _context.BuletinAnalize
                 .Include(b => b.Programare)
