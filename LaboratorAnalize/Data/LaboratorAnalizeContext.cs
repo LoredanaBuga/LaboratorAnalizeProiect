@@ -19,6 +19,8 @@ namespace LaboratorAnalize.Data
         public DbSet<PachetAnalize> PachetAnalize { get; set; }
         public DbSet<TipAnaliza> TipAnaliza { get; set; } = default!;
         public DbSet<ProgramareTipAnaliza> ProgramareTipAnaliza { get; set; } = default!;
+        public DbSet<BuletinAnalize> BuletinAnalize { get; set; } = default!;
+        public DbSet<RezultatAnaliza> RezultatAnaliza { get; set; } = default!;
 
     }
 }

@@ -1,0 +1,48 @@
+﻿@page
+@model LaboratorAnalize.Pages.BuletineAnaliza.IndexModel
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-page="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.BuletinAnalize[0].Programare)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.BuletinAnalize[0].DataEliberare)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.BuletinAnalize[0].Observatii)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model.BuletinAnalize) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Programare.ID)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DataEliberare)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Observatii)
+            </td>
+            <td>
+                <a asp-page="./Edit" asp-route-id="@item.ID">Edit</a> |
+                <a asp-page="./Details" asp-route-id="@item.ID">Details</a> |
+                <a asp-page="./Delete" asp-route-id="@item.ID">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

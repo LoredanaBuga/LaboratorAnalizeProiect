@@ -1,0 +1,66 @@
+﻿@page
+@model LaboratorAnalize.Pages.RezultateAnalize.IndexModel
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-page="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.RezultatAnaliza[0].BuletinAnalize)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.RezultatAnaliza[0].TipAnaliza)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.RezultatAnaliza[0].Valoare)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.RezultatAnaliza[0].Unitate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.RezultatAnaliza[0].IntervalReferinta)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.RezultatAnaliza[0].InLimite)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model.RezultatAnaliza) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.BuletinAnalize.ID)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TipAnaliza.ID)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Valoare)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Unitate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IntervalReferinta)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.InLimite)
+            </td>
+            <td>
+                <a asp-page="./Edit" asp-route-id="@item.ID">Edit</a> |
+                <a asp-page="./Details" asp-route-id="@item.ID">Details</a> |
+                <a asp-page="./Delete" asp-route-id="@item.ID">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
