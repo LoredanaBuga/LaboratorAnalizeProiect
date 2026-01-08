@@ -13,11 +13,13 @@
     <div class="col-md-4">
         <form method="post">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
             <div class="form-group">
                 <label asp-for="Programare.DataProgramare" class="control-label"></label>
                 <input asp-for="Programare.DataProgramare" class="form-control" />
                 <span asp-validation-for="Programare.DataProgramare" class="text-danger"></span>
             </div>
+
             <div class="form-group">
                 <label asp-for="Programare.Status" class="control-label"></label>
                 <select asp-for="Programare.Status" class="form-control">
@@ -27,13 +29,51 @@
                 </select>
                 <span asp-validation-for="Programare.Status" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="Programare.PacientID" class="control-label"></label>
-                <select asp-for="Programare.PacientID" class="form-control" asp-items="ViewBag.PacientID">
-                    <option value="">-- Selecteaza pacient --</option>
-                </select>
-                <span asp-validation-for="Programare.PacientID" class="text-danger"></span>
-            </div>
+
+            @if (User.IsInRole("Admin"))
+            {
+                <div class="form-group">
+                    <label asp-for="Programare.PacientID" class="control-label"></label>
+                    <select asp-for="Programare.PacientID" class="form-control" asp-items="ViewBag.PacientID">
+                        <option value="">-- Selecteaza pacient --</option>
+                    </select>
+                    <span asp-validation-for="Programare.PacientID" class="text-danger"></span>
+                </div>
+            }
+            else
+            {
+                <h5>Date pacient</h5>
+
+                <div class="form-group">
+                    <label asp-for="PacientInput.Nume" class="control-label"></label>
+                    <input asp-for="PacientInput.Nume" class="form-control" />
+                    <span asp-validation-for="PacientInput.Nume" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="PacientInput.Prenume" class="control-label"></label>
+                    <input asp-for="PacientInput.Prenume" class="form-control" />
+                    <span asp-validation-for="PacientInput.Prenume" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="PacientInput.CNP" class="control-label"></label>
+                    <input asp-for="PacientInput.CNP" class="form-control" />
+                    <span asp-validation-for="PacientInput.CNP" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="PacientInput.Email" class="control-label"></label>
+                    <input asp-for="PacientInput.Email" class="form-control" />
+                    <span asp-validation-for="PacientInput.Email" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="PacientInput.Telefon" class="control-label"></label>
+                    <input asp-for="PacientInput.Telefon" class="form-control" />
+                    <span asp-validation-for="PacientInput.Telefon" class="text-danger"></span>
+                </div>
+            }
 
             <div class="form-group">
                 <label asp-for="Programare.PachetAnalizeID" class="control-label"></label>
@@ -45,6 +85,7 @@
                 </small>
                 <span asp-validation-for="Programare.PachetAnalizeID" class="text-danger"></span>
             </div>
+
             <div class="form-group">
                 <label class="control-label">Tipuri analize</label>
                 <small class="text-muted">
@@ -72,11 +113,13 @@
                 <input asp-for="Programare.OraProgramare" class="form-control" />
                 <span asp-validation-for="Programare.OraProgramare" class="text-danger"></span>
             </div>
+
             <div class="form-group">
                 <label asp-for="Programare.Observatii" class="control-label"></label>
                 <input asp-for="Programare.Observatii" class="form-control" />
                 <span asp-validation-for="Programare.Observatii" class="text-danger"></span>
             </div>
+
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
             </div>
@@ -89,5 +132,7 @@
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }

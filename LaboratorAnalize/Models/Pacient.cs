@@ -7,6 +7,8 @@ namespace LaboratorAnalize.Models
     {
         public int ID { get; set; }
 
+        public string? UserId { get; set; }
+
         [Required(ErrorMessage = "Numele este obligatoriu.")]
         [StringLength(30, MinimumLength = 2, ErrorMessage = "Numele trebuie sa aiba intre 2 si 30 de caractere.")]
         [RegularExpression(@"^[A-Z][a-zA-Z\s\-]*$", ErrorMessage = "Numele trebuie sa inceapa cu litera mare.")]
@@ -24,7 +26,6 @@ namespace LaboratorAnalize.Models
         [EmailAddress(ErrorMessage = "Email invalid.")]
         public string? Email { get; set; }
 
-        // Cerinta tipica din lab: telefonul sa inceapa cu 0
         [Required(ErrorMessage = "Telefonul este obligatoriu.")]
         [RegularExpression(@"^0\d{9}$", ErrorMessage = "Telefonul trebuie sa inceapa cu 0 si sa aiba 10 cifre.")]
         public string Telefon { get; set; } = string.Empty;
