@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -13,10 +14,12 @@ namespace LaboratorAnalize.Pages.Programari
     public class CreateModel : ProgramareTipAnalizePageModel
     {
         private readonly LaboratorAnalizeContext _context;
+        private readonly UserManager<IdentityUser> _userManager;
 
-        public CreateModel(LaboratorAnalizeContext context)
+        public CreateModel(LaboratorAnalizeContext context, UserManager<IdentityUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
         public IActionResult OnGet()
@@ -58,6 +61,9 @@ namespace LaboratorAnalize.Pages.Programari
                 PopulateAssignedTipAnalizaData(_context, Programare);
                 return Page();
             }
+
+            // LEGARE PROGRAMARE DE USERUL LOGAT
+            Programare.UserId = _userManager.GetUserId(User);
 
             _context.Programare.Add(Programare);
             await _context.SaveChangesAsync();

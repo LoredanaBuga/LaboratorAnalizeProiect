@@ -7,9 +7,13 @@
 
 <h1>Index</h1>
 
-<p>
-    <a asp-page="Create">Create New</a>
-</p>
+@if (User.IsInRole("Admin"))
+{
+    <p>
+        <a asp-page="Create">Create New</a>
+    </p>
+}
+
 <table class="table">
     <thead>
         <tr>
@@ -35,32 +39,40 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model.RezultatAnaliza) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.BuletinAnalize.ID)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.TipAnaliza.ID)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Valoare)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Unitate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.IntervalReferinta)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.InLimite)
-            </td>
-            <td>
-                <a asp-page="./Edit" asp-route-id="@item.ID">Edit</a> |
-                <a asp-page="./Details" asp-route-id="@item.ID">Details</a> |
-                <a asp-page="./Delete" asp-route-id="@item.ID">Delete</a>
-            </td>
-        </tr>
-}
+        @foreach (var item in Model.RezultatAnaliza)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.BuletinAnalize.ID)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.TipAnaliza.ID)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Valoare)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Unitate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.IntervalReferinta)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.InLimite)
+                </td>
+                <td>
+                    <a asp-page="./Details" asp-route-id="@item.ID">Details</a>
+
+                    @if (User.IsInRole("Admin"))
+                    {
+                        <span> | </span>
+                        <a asp-page="./Edit" asp-route-id="@item.ID">Edit</a>
+                        <span> | </span>
+                        <a asp-page="./Delete" asp-route-id="@item.ID">Delete</a>
+                    }
+                </td>
+
+            </tr>
+        }
     </tbody>
 </table>

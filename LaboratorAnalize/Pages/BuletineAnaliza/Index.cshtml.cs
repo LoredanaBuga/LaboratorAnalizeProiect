@@ -1,19 +1,22 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.EntityFrameworkCore;
 using LaboratorAnalize.Data;
 using LaboratorAnalize.Models.ViewModels;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.EntityFrameworkCore;
 
 namespace LaboratorAnalize.Pages.BuletineAnaliza
 {
     public class IndexModel : PageModel
     {
         private readonly LaboratorAnalizeContext _context;
+        private readonly UserManager<IdentityUser> _userManager;
 
-        public IndexModel(LaboratorAnalizeContext context)
+        public IndexModel(LaboratorAnalizeContext context, UserManager<IdentityUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
         public BuletinAnalizeIndexData Data { get; set; } = new BuletinAnalizeIndexData();
@@ -21,20 +24,36 @@ namespace LaboratorAnalize.Pages.BuletineAnaliza
 
         public async Task OnGetAsync(int? id)
         {
-            Data.Buletine = await _context.BuletinAnalize
-        .Include(b => b.Programare)
-            .ThenInclude(p => p.Pacient)
-        .Include(b => b.Rezultate) // Modificat aici (fără "Analize")
-            .ThenInclude(r => r.TipAnaliza)
-        .AsNoTracking()
-        .OrderByDescending(b => b.DataEliberare) // Acum ar trebui să meargă dacă ai using-ul pus
-        .ToListAsync();
+            var query = _context.BuletinAnalize
+                .Include(b => b.Programare)
+                    .ThenInclude(p => p.Pacient)
+                .Include(b => b.Rezultate)
+                    .ThenInclude(r => r.TipAnaliza)
+                .AsNoTracking()
+                .AsQueryable();
+
+            // ✅ User vede doar buletinele lui (prin Programare.UserId)
+            if (!User.IsInRole("Admin"))
+            {
+                var currentUserId = _userManager.GetUserId(User);
+                query = query.Where(b =>
+                    b.Programare != null &&
+                    b.Programare.UserId == currentUserId
+                );
+            }
+
+            Data.Buletine = await query
+                .OrderByDescending(b => b.DataEliberare)
+                .ToListAsync();
 
             if (id != null)
             {
                 BuletinID = id.Value;
-                var buletin = Data.Buletine.First(b => b.ID == id.Value);
-                Data.Rezultate = buletin.Rezultate; // Modificat aici
+                var buletin = Data.Buletine.FirstOrDefault(b => b.ID == id.Value);
+                if (buletin != null)
+                {
+                    Data.Rezultate = buletin.Rezultate;
+                }
             }
         }
     }

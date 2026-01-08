@@ -1,22 +1,25 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
+using LaboratorAnalize.Data;
+using LaboratorAnalize.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using LaboratorAnalize.Data;
-using LaboratorAnalize.Models;
 
 namespace LaboratorAnalize.Pages.Programari
 {
     public class EditModel : ProgramareTipAnalizePageModel
     {
         private readonly LaboratorAnalizeContext _context;
+        private readonly UserManager<IdentityUser> _userManager;
 
-        public EditModel(LaboratorAnalizeContext context)
+        public EditModel(LaboratorAnalizeContext context, UserManager<IdentityUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
         [BindProperty]
@@ -40,6 +43,16 @@ namespace LaboratorAnalize.Pages.Programari
             if (Programare == null)
             {
                 return NotFound();
+            }
+
+            // ✅ VERIFICARE: daca nu e Admin, trebuie sa fie programarea lui
+            if (!User.IsInRole("Admin"))
+            {
+                var currentUserId = _userManager.GetUserId(User);
+                if (Programare.UserId != currentUserId)
+                {
+                    return Forbid(); // sau NotFound();
+                }
             }
 
             PopulateAssignedTipAnalizaData(_context, Programare);
@@ -69,6 +82,15 @@ namespace LaboratorAnalize.Pages.Programari
                 return NotFound();
             }
 
+            if (!User.IsInRole("Admin"))
+            {
+                var currentUserId = _userManager.GetUserId(User);
+                if (programareToUpdate.UserId != currentUserId)
+                {
+                    return Forbid(); // sau NotFound();
+                }
+            }
+
             if (await TryUpdateModelAsync(
                 programareToUpdate,
                 "Programare",
@@ -84,7 +106,6 @@ namespace LaboratorAnalize.Pages.Programari
                 return RedirectToPage("./Index");
             }
 
-            // daca nu s-a validat modelul, repopulezi checkbox-urile si dropdown-urile
             UpdateProgramareTipAnalize(_context, selectedTipuriAnalize, programareToUpdate);
             PopulateAssignedTipAnalizaData(_context, programareToUpdate);
 

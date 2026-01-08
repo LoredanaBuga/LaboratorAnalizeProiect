@@ -6,6 +6,7 @@ namespace LaboratorAnalize.Models
     public class Programare
     {
         public int ID { get; set; }
+        public string? UserId { get; set; }
 
         [Display(Name = "Data programare")]
         [DataType(DataType.Date)]

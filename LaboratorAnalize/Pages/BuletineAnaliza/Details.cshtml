@@ -84,9 +84,15 @@
                     <td>@r.IntervalReferinta</td>
                     <td>@(r.InLimite ? "DA" : "NU")</td>
                     <td>
-                        <a asp-page="/RezultateAnalize/Edit" asp-route-id="@r.ID">Edit</a> |
-                        <a asp-page="/RezultateAnalize/Details" asp-route-id="@r.ID">Details</a> |
-                        <a asp-page="/RezultateAnalize/Delete" asp-route-id="@r.ID">Delete</a>
+                        <a asp-page="/RezultateAnalize/Details" asp-route-id="@r.ID">Details</a>
+
+                        @if (User.IsInRole("Admin"))
+                        {
+                            <span> | </span>
+                            <a asp-page="/RezultateAnalize/Edit" asp-route-id="@r.ID">Edit</a>
+                            <span> | </span>
+                            <a asp-page="/RezultateAnalize/Delete" asp-route-id="@r.ID">Delete</a>
+                        }
                     </td>
                 </tr>
             }

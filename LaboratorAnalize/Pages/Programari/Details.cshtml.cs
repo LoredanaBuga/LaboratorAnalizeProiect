@@ -1,25 +1,27 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using LaboratorAnalize.Data;
+using LaboratorAnalize.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
-using LaboratorAnalize.Data;
-using LaboratorAnalize.Models;
 
 namespace LaboratorAnalize.Pages.Programari
 {
     public class DetailsModel : PageModel
     {
         private readonly LaboratorAnalizeContext _context;
+        private readonly UserManager<IdentityUser> _userManager;
 
-        public DetailsModel(LaboratorAnalizeContext context)
+        public DetailsModel(LaboratorAnalizeContext context, UserManager<IdentityUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
         public Programare Programare { get; set; } = default!;
 
-        // Buletin + rezultate pentru programarea curenta
         public BuletinAnalize? Buletin { get; set; }
         public IList<RezultatAnaliza> Rezultate { get; set; } = new List<RezultatAnaliza>();
 
@@ -39,7 +41,15 @@ namespace LaboratorAnalize.Pages.Programari
             if (Programare == null)
                 return NotFound();
 
-            // cauta buletinul emis pentru aceasta programare
+            if (!User.IsInRole("Admin"))
+            {
+                var currentUserId = _userManager.GetUserId(User);
+                if (Programare.UserId != currentUserId)
+                {
+                    return Forbid(); // sau NotFound();
+                }
+            }
+
             Buletin = await _context.BuletinAnalize
                 .Include(b => b.Rezultate)
                     .ThenInclude(r => r.TipAnaliza)

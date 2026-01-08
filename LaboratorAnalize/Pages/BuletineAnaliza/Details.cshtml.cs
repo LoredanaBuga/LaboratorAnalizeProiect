@@ -1,19 +1,22 @@
 ﻿using System.Threading.Tasks;
+using LaboratorAnalize.Data;
+using LaboratorAnalize.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
-using LaboratorAnalize.Data;
-using LaboratorAnalize.Models;
 
 namespace LaboratorAnalize.Pages.BuletineAnaliza
 {
     public class DetailsModel : PageModel
     {
         private readonly LaboratorAnalizeContext _context;
+        private readonly UserManager<IdentityUser> _userManager;
 
-        public DetailsModel(LaboratorAnalizeContext context)
+        public DetailsModel(LaboratorAnalizeContext context, UserManager<IdentityUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
         public BuletinAnalize BuletinAnalize { get; set; } = default!;
@@ -38,6 +41,18 @@ namespace LaboratorAnalize.Pages.BuletineAnaliza
             if (BuletinAnalize == null)
             {
                 return NotFound();
+            }
+
+            // ✅ VERIFICARE: User vede doar buletinele lui
+            if (!User.IsInRole("Admin"))
+            {
+                var currentUserId = _userManager.GetUserId(User);
+                var ownerId = BuletinAnalize.Programare?.UserId;
+
+                if (ownerId != currentUserId)
+                {
+                    return Forbid(); // sau NotFound();
+                }
             }
 
             return Page();

@@ -1,20 +1,23 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.EntityFrameworkCore;
 using LaboratorAnalize.Data;
 using LaboratorAnalize.Models;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.EntityFrameworkCore;
 
 namespace LaboratorAnalize.Pages.Programari
 {
     public class IndexModel : PageModel
     {
         private readonly LaboratorAnalizeContext _context;
+        private readonly UserManager<IdentityUser> _userManager;
 
-        public IndexModel(LaboratorAnalizeContext context)
+        public IndexModel(LaboratorAnalizeContext context, UserManager<IdentityUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
         public ProgramareData ProgramareD { get; set; } = default!;
@@ -43,6 +46,12 @@ namespace LaboratorAnalize.Pages.Programari
                 .AsNoTracking()
                 .AsQueryable();
 
+            if (!User.IsInRole("Admin"))
+            {
+                var currentUserId = _userManager.GetUserId(User);
+                programariQuery = programariQuery.Where(p => p.UserId == currentUserId);
+            }
+
             if (!string.IsNullOrEmpty(searchString))
             {
                 programariQuery = programariQuery.Where(p =>
@@ -67,7 +76,12 @@ namespace LaboratorAnalize.Pages.Programari
             if (id != null)
             {
                 ProgramareID = id.Value;
-                var programare = ProgramareD.Programari.Single(i => i.ID == id.Value);
+
+                var programare = ProgramareD.Programari.SingleOrDefault(i => i.ID == id.Value);
+                if (programare == null)
+                {
+                    return;
+                }
 
                 ProgramareD.TipuriAnalize = (programare.ProgramareTipAnalize ?? new List<ProgramareTipAnaliza>())
                     .Select(s => s.TipAnaliza);

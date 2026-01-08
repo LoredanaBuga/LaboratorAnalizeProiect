@@ -26,8 +26,8 @@ builder.Services.AddRazorPages(options =>
 {
     // Doar Admin
     options.Conventions.AuthorizeFolder("/Pacienti", "AdminPolicy");
-    options.Conventions.AuthorizeFolder("/BuletineAnaliza", "AdminPolicy");
-    options.Conventions.AuthorizeFolder("/RezultateAnalize", "AdminPolicy");
+    options.Conventions.AuthorizeFolder("/BuletineAnaliza");
+    options.Conventions.AuthorizeFolder("/RezultateAnalize");
 
   
     options.Conventions.AuthorizeFolder("/Programari");
